@@ -2,6 +2,14 @@
 
 Desenvolvimento de um sistema IoT de baixo custo para monitoramento preventivo de barramentos elétricos industriais.
 
+
+## Estrutura do repositório
+
+- `docs/`: documentação acadêmica e técnica do TCC.
+- `firmware-esp32/`: firmware embarcado com Arduino/PlatformIO.
+- `backend-node/`: API de ingestão e consulta de leituras.
+- `app-mobile-expo/`: aplicativo mobile React Native com Expo.
+
 ## 1) Arquitetura completa do sistema
 
 ### Visão geral

@@ -1,15 +1,15 @@
 #include <Arduino.h>
 
-#include "config/secrets.h"
+#include "config/device_config.h"
+#include "config/thresholds.h"
+#include "config/wifi_config.h"
 #include "network/http_sender.h"
-#include "sensors/humidity_sensor.h"
 #include "pins.h"
 #include "sensors/current_sensor_sim.h"
+#include "sensors/humidity_sensor.h"
 #include "sensors/temperature_sensor.h"
 
 namespace {
-constexpr unsigned long POST_INTERVAL_MS = 10000;
-
 TemperatureSensor g_temperatureSensor(PIN_DS18B20);
 HumiditySensor g_humiditySensor(PIN_DHT22);
 CurrentSensorSim g_currentSensorSim;
@@ -60,11 +60,15 @@ void loop() {
   // Envio HTTP POST em JSON a cada 10 segundos.
   bool ok = g_httpSender.postTelemetry(payload);
 
+  // Exemplo de uso dos thresholds locais (ainda não altera fluxo principal).
+  const bool tempCritical = ds18b20TempC >= TEMP_CRITICAL_C || dht22TempC >= TEMP_CRITICAL_C;
+
   Serial.printf(
-      "Payload => DS18B20: %.2fC | DHT22 Temp: %.2fC | DHT22 Umidade: %.2f%% | Corrente(sim): %.2fA | envio=%s\n",
+      "Payload => DS18B20: %.2fC | DHT22 Temp: %.2fC | DHT22 Umidade: %.2f%% | Corrente(sim): %.2fA | envio=%s | tempCritical=%s\n",
       ds18b20TempC,
       dht22TempC,
       dht22Humidity,
       simulatedCurrentA,
-      ok ? "OK" : "FALHOU");
+      ok ? "OK" : "FALHOU",
+      tempCritical ? "SIM" : "NAO");
 }
