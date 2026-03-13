@@ -6,6 +6,7 @@ API para receber e consultar leituras IoT.
 - `POST /readings`
 - `GET /devices/:id/readings`
 - `GET /devices/:id/status`
+- `GET /devices/:id/busway-metrics`
 - Persistência em PostgreSQL com campos:
   - `device_id`
   - `temperature`
@@ -13,6 +14,20 @@ API para receber e consultar leituras IoT.
   - `current`
   - `created_at`
 - Cálculo de status por limite: `normal`, `atenção`, `crítico`
+- Métricas de sobrecarga de busway por corrente nominal (% de carga)
+
+## Métricas de sobrecarga de busway
+A API calcula `busway_overload_metrics` a partir da corrente medida e da corrente nominal configurada:
+
+- `load_pct = (current / nominal_current) * 100`
+- Faixas padrão:
+  - `<= 80%`: normal
+  - `> 80% e <= 100%`: atenção
+  - `> 100% e <= 120%`: sobrecarga
+  - `> 120%`: sobrecarga crítica
+
+> Referência técnica usada como base de engenharia: IEC 61439 / NBR IEC 61439.
+> **Importante:** a configuração final deve ser validada com projeto elétrico, fabricante do barramento e responsável técnico.
 
 ## Estrutura
 - `src/modules/`: estrutura alvo por domínio (auth, devices, ingestion, telemetry, alerts, notifications, users).
